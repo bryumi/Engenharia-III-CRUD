@@ -102,7 +102,7 @@ const BookingsPage = () => {
         <Button
           type="button"
           customClassNames="min-w-[200px]"
-          onClick={() => router.push('/reservas/cadastrar')}
+          onClick={() => router.push('/cadastrar')}
         >
           Cadastrar
         </Button>

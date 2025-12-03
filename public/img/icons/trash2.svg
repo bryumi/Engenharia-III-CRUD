@@ -1,0 +1,12 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="32" height="32" rx="4" fill="#FFD2D2"/>
+<foreignObject x="-1.06006" y="-0.919922" width="33.77" height="36.9102"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(5px);clip-path:url(#bgblur_0_2231_13980_clip_path);height:100%;width:100%"></div></foreignObject><path data-figma-bg-blur-radius="10" d="M9.68994 9.83008V23.1901C9.68994 24.3201 10.6099 25.2401 11.7399 25.2401H19.8999C21.0299 25.2401 21.95 24.3201 21.95 23.1901V9.83008H21.9599H9.68994Z" stroke="#DE3737" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<foreignObject x="-2.95996" y="-0.919922" width="37.9199" height="21.5"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(5px);height:100%;width:100%"></div></foreignObject><path data-figma-bg-blur-radius="10" d="M7.79004 9.83008H24.21" stroke="#DE3737" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<foreignObject x="2.16992" y="-4.00977" width="27.6602" height="24.5801"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(5px);clip-path:url(#bgblur_1_2231_13980_clip_path);height:100%;width:100%"></div></foreignObject><path data-figma-bg-blur-radius="10" d="M19.0799 6.74023V9.82024H12.9199V6.74023H19.0799Z" stroke="#DE3737" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<foreignObject x="3.18994" y="3" width="21.5" height="28.8906"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(5px);height:100%;width:100%"></div></foreignObject><path data-figma-bg-blur-radius="10" d="M13.9399 13.75V21.14" stroke="#DE3737" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<foreignObject x="7.2998" y="3" width="21.5" height="28.8906"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(5px);height:100%;width:100%"></div></foreignObject><path data-figma-bg-blur-radius="10" d="M18.0498 13.75V21.14" stroke="#DE3737" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<defs>
+<clipPath id="bgblur_0_2231_13980_clip_path" transform="translate(1.06006 0.919922)"><path d="M9.68994 9.83008V23.1901C9.68994 24.3201 10.6099 25.2401 11.7399 25.2401H19.8999C21.0299 25.2401 21.95 24.3201 21.95 23.1901V9.83008H21.9599H9.68994Z"/>
+</clipPath><clipPath id="bgblur_1_2231_13980_clip_path" transform="translate(-2.16992 4.00977)"><path d="M19.0799 6.74023V9.82024H12.9199V6.74023H19.0799Z"/>
+</clipPath></defs>
+</svg>

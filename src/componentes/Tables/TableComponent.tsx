@@ -118,7 +118,7 @@ const TableComponent = ({
               <th className="border-primary80 border-b-1 uppercase">
                 <span
                   className={twMerge(
-                    'text-primary80 ml-auto! flex w-[256px] items-center justify-center p-[12px]! text-center text-[14px] font-bold',
+                    'text-primary80 ml-auto! flex w-[200px] items-center justify-center p-[12px]! text-center text-[14px] font-bold',
                   )}
                 >
                   ações
@@ -176,15 +176,10 @@ const TableComponent = ({
                     )}
                   </td>
                 ))}
-                <td className="text-primary80 h-[56px] text-[16px] font-normal">
+                <td className="text-primary80 text-align-center h-[56px] text-[16px] font-normal">
                   <div
                     className={twMerge(
-                      'ml-auto! flex w-[256px] items-center justify-center p-[12px]!',
-                      gap === '24'
-                        ? 'gap-[24px]'
-                        : gap === '48'
-                          ? 'gap-[48px]'
-                          : 'gap-[36px]', // default
+                      'ml-auto! flex w-[200px] items-center justify-center gap-2 p-[12px]!',
                     )}
                   >
                     {handleRadio && (

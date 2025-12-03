@@ -1,8 +1,6 @@
 /* eslint-disable react/button-has-type */
 
 /* eslint-disable @next/next/no-img-element */
-import { fustat } from '@/styles/fonts';
-import React from 'react';
 import { twMerge } from 'tailwind-merge';
 
 interface Props {
@@ -78,16 +76,13 @@ const Modal = ({
           />
         </div>
         {message1 && (
-          <p
-            className={`${fustat.className} text-[20px] font-semibold text-[#282828]`}
-          >
+          <p className={`text-[20px] font-semibold text-[#282828]`}>
             {message1}
           </p>
         )}
         {message2 && (
           <p
             className={twMerge(
-              fustat.className,
               'text-center text-[16px] font-normal whitespace-break-spaces text-[#5F6980]',
             )}
           >
@@ -101,7 +96,6 @@ const Modal = ({
               type={button.type || 'button'}
               onClick={button.onClick}
               className={twMerge(
-                fustat.className,
                 `h-[40px] w-full rounded-[8px] border-1 text-[16px] font-bold whitespace-nowrap`,
                 types[modalType].buttonBorderColor,
                 buttons.length - 1 === index

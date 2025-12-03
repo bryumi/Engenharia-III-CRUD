@@ -4,27 +4,62 @@ import Input2 from '../Inputs/Input2/Input2';
 import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { InputSelect } from '../Inputs/InputSelect/InputSelect';
-import { maskMoney } from '@/utils/masks';
+import { currencyMask, maskMoney } from '@/utils/masks';
+import { IRooms } from '@/@types/rooms.interface';
+import { useEffect } from 'react';
 
 interface IRoomFormProps {
   onSave?: (data: IRoomFormSchema) => void;
+  formData?: IRooms;
+  formType?: 'edit' | 'create';
+  isSubmitting?: boolean;
 }
-const RoomForm = ({ onSave }: IRoomFormProps) => {
+const RoomForm = ({
+  onSave,
+  formData,
+  formType = 'create',
+  isSubmitting = false,
+}: IRoomFormProps) => {
+  const formDefaultValues =
+    formType === 'edit'
+      ? {
+          price: formData ? currencyMask(formData.precoBase || 0) : '',
+          numberAdults: formData
+            ? {
+                label: String(formData.qntdAdultos),
+                value: String(formData.qntdAdultos),
+              }
+            : undefined,
+          numberChildren: formData
+            ? {
+                label: String(formData.qntdCriancas),
+                value: String(formData.qntdCriancas),
+              }
+            : undefined,
+          type: formData
+            ? { label: formData.type, value: formData.type }
+            : undefined,
+        }
+      : undefined;
   const {
     register,
     handleSubmit,
     control,
+    reset,
     formState: { errors },
   } = useForm<IRoomFormSchema>({
     resolver: yupResolver(RoomFormSchema),
     mode: 'onChange',
+    defaultValues: formDefaultValues,
   });
+
   const onSubmit = (data: IRoomFormSchema) => {
     console.log(data);
     if (onSave) {
       onSave(data);
     }
   };
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit, errs => console.log(errs))}
@@ -35,13 +70,6 @@ const RoomForm = ({ onSave }: IRoomFormProps) => {
           Dados do quarto
         </legend>
         <fieldset className="grid grid-cols-4 gap-[24px]">
-          <Input2
-            maxwidthClassName="max-w-[368px]"
-            label="Código"
-            placeholder="Insira o código do quarto"
-            {...register('code')}
-            error={errors?.code?.message}
-          />
           <Input2
             maxwidthClassName="max-w-[368px]"
             label="Preço base"
@@ -118,7 +146,11 @@ const RoomForm = ({ onSave }: IRoomFormProps) => {
         {/* <hr className="text-primary20" /> */}
       </div>
       <div className="flex items-center justify-end">
-        <Button type="submit" customClassNames="w-[200px]">
+        <Button
+          type="submit"
+          customClassNames="w-[200px]"
+          disabled={isSubmitting}
+        >
           Salvar
         </Button>
       </div>

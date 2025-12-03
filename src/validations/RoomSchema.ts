@@ -4,7 +4,6 @@ import * as yup from 'yup';
 export type IRoomFormSchema = yup.InferType<typeof RoomFormSchema>;
 
 export const RoomFormSchema = yup.object({
-  code: yup.string().required('O código é obrigatório'),
   type: yup.mixed<IOption>().required('O tipo de quarto é obrigatório'),
   numberChildren: yup
     .mixed<IOption>()

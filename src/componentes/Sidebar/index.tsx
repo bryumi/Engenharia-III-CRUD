@@ -1,4 +1,4 @@
-import { BaggageClaim, Home } from 'lucide-react';
+import { BaggageClaim, Home, TicketPercent } from 'lucide-react';
 import { Logo } from './Logo';
 import { useState } from 'react';
 import { twMerge } from 'tailwind-merge';
@@ -6,14 +6,20 @@ import { FaBed, FaRegUser } from 'react-icons/fa6';
 import { usePathname, useRouter } from 'next/navigation';
 
 const links = [
-  { href: '/dashboard', label: 'Dashboard', icon: Home },
-  { href: '/reservas', label: 'Reservas', icon: BaggageClaim },
+  { href: '/', label: 'Reservas', icon: BaggageClaim },
   { href: '/quartos', label: 'Quartos', icon: FaBed },
+  { href: '/promocoes', label: 'Promoções', icon: TicketPercent },
 ];
 export function Sidebar() {
   const [extendSidebar, setExtendSidebar] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
+  const isActive = (href: string) => {
+    if (href === '/') {
+      return pathname === '/' || pathname === '/cadastrar'; // só ativa na home
+    }
+    return pathname.startsWith(href); // ativa /quartos e /quartos/cadastrar
+  };
   return (
     <aside
       onMouseEnter={() => setExtendSidebar(true)}
@@ -37,7 +43,7 @@ export function Sidebar() {
               extendSidebar
                 ? 'w-[214px] justify-start'
                 : 'min-w-[24px] justify-center',
-              pathname.match(link.href) !== null
+              isActive(link.href)
                 ? '[&>svg]:text-white2 [&>span]:text-white2 bg-primary font-bold'
                 : 'hover:bg-neutral20 text-primary font-normal',
             )}

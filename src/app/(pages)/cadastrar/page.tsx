@@ -19,7 +19,7 @@ const BookingsRegisterPage = () => {
   };
   return (
     <div className="flex flex-col gap-[32px]">
-      <Title onBack={() => router.push('/reservas')}>Cadastro de reserva</Title>
+      <Title onBack={() => router.push('/')}>Cadastro de reserva</Title>
       <div
         className={twMerge(
           'before:bg-primary40 after:bg-primary relative mx-auto! flex w-full max-w-[800px] justify-between before:absolute before:top-[25%] before:h-[3px] before:w-full after:absolute after:top-[25%] after:h-[3px] after:transition-all after:duration-500 after:ease-in-out',
