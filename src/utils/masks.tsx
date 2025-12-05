@@ -281,3 +281,9 @@ export const unmaskCurrency = (value: string) => {
 
   return Number(unmasked);
 };
+export const dateISO = (dateString: string) => {
+  const parts = dateString.split('/');
+  const date = `${parts[2]}-${parts[1]}-${parts[0]}`;
+  const typeDate = new Date(date);
+  return typeDate;
+};

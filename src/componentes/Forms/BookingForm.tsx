@@ -8,6 +8,8 @@ import {
   StepTwoBookingFormSchema,
 } from '@/validations/BookingSchema';
 import { generateOptions } from '@/utils/generateOptions';
+import { useOptionsRooms } from '@/services/rooms/list-rooms';
+import { useOptionsSales } from '@/services/sales/list-sales';
 
 const BookingForm = () => {
   const {
@@ -24,6 +26,8 @@ const BookingForm = () => {
   const onSubmit = (data: IStepTwoBookingFormSchema) => {
     console.log(data);
   };
+  const { data: optionsRooms } = useOptionsRooms();
+  const { data: optionsSales } = useOptionsSales();
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -41,12 +45,8 @@ const BookingForm = () => {
               render={({ field, fieldState }) => (
                 <InputSelect
                   label="Quarto"
-                  options={[
-                    { label: '0012', value: '0012' },
-                    { label: '0013', value: '0013' },
-                    { label: '0014', value: '0014' },
-                  ]}
-                  value={field.value}
+                  options={optionsRooms || []}
+                  value={field.value ?? null}
                   onChange={field.onChange}
                   error={fieldState.error?.message}
                 />
@@ -76,7 +76,7 @@ const BookingForm = () => {
                 <InputSelect
                   label="Quantidade de adultos"
                   options={generateOptions(1, 8)}
-                  value={field.value}
+                  value={field.value ?? null}
                   onChange={field.onChange}
                   error={fieldState.error?.message}
                 />
@@ -91,7 +91,7 @@ const BookingForm = () => {
                 <InputSelect
                   label="Quantidade de crianças"
                   options={generateOptions(0, 8)}
-                  value={field.value}
+                  value={field.value ?? null}
                   onChange={field.onChange}
                   error={fieldState.error?.message}
                 />
@@ -119,15 +119,48 @@ const BookingForm = () => {
               ))}
             </>
           )}
+        </fieldset>
+        <hr className="text-primary20" />
+        <legend className="text-primary80 mb-[24px]! text-[18px] font-bold">
+          Dados de cancelamento
+        </legend>
+        <fieldset className="grid grid-cols-4 gap-[24px]">
           <Input2
             maxwidthClassName="max-w-[368px]"
-            label="Valor total"
-            placeholder="Insira o valor total"
-            {...register('totalValue')}
-            error={errors?.totalValue?.message}
+            label="Descrição do cancelamento"
+            placeholder="Insira a descrição do cancelamento"
+            {...register('cancelDescription')}
+            error={errors?.cancelDescription?.message}
+          />
+          <Input2
+            maxwidthClassName="max-w-[368px]"
+            label="Porcentagem de multa por cancelamento"
+            placeholder="Insira a porcentagem de multa por cancelamento"
+            {...register('percentageCancel')}
+            error={errors?.percentageCancel?.message}
           />
         </fieldset>
-        {/* <hr className="text-primary20" /> */}
+        <hr className="text-primary20" />
+        <legend className="text-primary80 mb-[24px]! text-[18px] font-bold">
+          Promoção
+        </legend>
+        <fieldset className="grid grid-cols-4 gap-[24px]">
+          <div className="max-w-[368px]">
+            <Controller
+              name="sale"
+              control={control}
+              render={({ field, fieldState }) => (
+                <InputSelect
+                  label="Promoção"
+                  options={optionsSales || []}
+                  value={field.value ?? null}
+                  onChange={field.onChange}
+                  error={fieldState.error?.message}
+                />
+              )}
+            />
+          </div>
+        </fieldset>
       </div>
       <div className="flex items-center justify-end">
         <Button type="submit" customClassNames="w-[200px]">

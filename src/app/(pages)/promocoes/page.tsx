@@ -2,36 +2,36 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
-import React, { ChangeEvent, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Button from '@/componentes/Button/Button';
-import { mockRooms } from '@/data/mockRooms';
 import Title from '@/componentes/Title/Title';
 import Modal from '@/componentes/Modals/Modal/Modal';
 import TableComponent, { IRow } from '@/componentes/Tables/TableComponent';
+import ModalSale from '@/componentes/Modals/ModalSale/ModalSale';
+import { useListSales } from '@/services/sales/list-sales';
+import { ISale } from '@/@types/sale.interface';
 
-const dataToRow = (data: any[]) => {
+const dataToRow = (data: ISale[]) => {
   return data?.map(item => ({
     id: item?.id,
-    active: item?.status === 'disponível',
     data: [
-      { text: item?.code },
-      { text: item?.name },
-      { text: item?.capacidade },
-      {
-        text: item?.status,
-        customClassNames: item.status === 'ocupado' ? 'text-red-500' : '',
-      },
+      { text: item?.codigoSale },
+      { text: item?.description },
+      { text: item?.tipo },
+      { text: item?.valor },
+      { text: item?.validoAte },
     ],
   })) as IRow[];
 };
 const PromotionsPage = () => {
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
-  const [openSwitchModal, setOpenSwitchModal] = useState(false);
-  const [openSwitchSuccessModal, setOpenSwitchSuccessModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [openDeleteSuccessModal, setOpenDeleteSuccessModal] = useState(false);
+  const [openSuccessModal, setOpenSuccessModal] = useState(false);
+  const [openRegisterModal, setOpenRegisterModal] = useState(false);
+  const { data: salesData } = useListSales();
 
   const handleDelete = (id: string) => {
     // setSelectedItem({ id });
@@ -42,25 +42,6 @@ const PromotionsPage = () => {
     // if (selectedItem) {
     //   mutateDelete(selectedItem.id);
     // }
-  };
-
-  const handleSwitchModal = (id: string, bool: boolean) => {
-    // setSelectedItem({ id, bool });
-    setOpenSwitchModal(true);
-  };
-
-  const handleToggle = () => {
-    // if (selectedItem) {
-    //   mutateSwitch({
-    //     documentId: selectedItem.id,
-    //     bool: !selectedItem.bool,
-    //   });
-    // }
-  };
-
-  const handleCloseSwitchSuccessModal = () => {
-    // setSelectedItem(undefined);
-    setOpenSwitchSuccessModal(false);
   };
 
   return (
@@ -97,12 +78,34 @@ const PromotionsPage = () => {
           ]}
         />
       )}
+      {openSuccessModal && (
+        <Modal
+          modalType="success"
+          message1="Sucesso!"
+          message2="Dados cadastrados com sucesso!"
+          buttons={[
+            {
+              text: 'Voltar',
+              onClick: () => setOpenSuccessModal(false),
+            },
+          ]}
+        />
+      )}
+      {openRegisterModal && (
+        <ModalSale
+          onClose={() => setOpenRegisterModal(false)}
+          onSave={() => {
+            setOpenRegisterModal(false);
+            setOpenSuccessModal(true);
+          }}
+        />
+      )}
       <div className="flex items-center justify-between">
-        <Title>Reservas</Title>
+        <Title>Promoções</Title>
         <Button
           type="button"
           customClassNames="min-w-[200px]"
-          onClick={() => router.push('/cadastrar')}
+          onClick={() => setOpenRegisterModal(true)}
         >
           Cadastrar
         </Button>
@@ -110,18 +113,18 @@ const PromotionsPage = () => {
       <TableComponent
         headers={[
           { name: 'CÓDIGO' },
-          { name: 'NOME DO QUARTO' },
-          { name: 'CAPACIDADE' },
-          { name: 'STATUS' },
+          { name: 'DESCRIÇÃO' },
+          { name: 'TIPO' },
+          { name: 'DESCONTO' },
+          { name: 'VÁLIDO ATÉ' },
         ]}
-        rows={dataToRow(mockRooms)}
+        rows={dataToRow(salesData?.sales || [])}
         page={currentPage}
         setPage={setCurrentPage}
-        total={mockRooms.length || 0}
-        pageSize={6}
+        total={salesData?.count || 0}
+        pageSize={10}
         pageCount={1}
         handleDelete={handleDelete}
-        handleToggle={handleSwitchModal}
       />
     </div>
   );

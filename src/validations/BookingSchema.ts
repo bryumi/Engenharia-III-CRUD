@@ -98,5 +98,7 @@ export const StepTwoBookingFormSchema = yup.object({
     .mixed<IOption>()
     .required('A quantidade de crianças é obrigatória'),
   childrenAges: yup.array().of(yup.mixed<IOption>()).notRequired(),
-  totalValue: yup.string().required('O valor total é obrigatório'),
+  cancelDescription: yup.string().notRequired(),
+  percentageCancel: yup.number().notRequired(),
+  sale: yup.mixed<IOption>().notRequired(),
 });

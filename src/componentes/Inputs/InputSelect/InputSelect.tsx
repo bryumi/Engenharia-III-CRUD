@@ -94,7 +94,7 @@ export function InputSelect({
           </button>
         </PopoverTrigger>
 
-        <PopoverContent className="border-primary-100 scrollbar-thin scrollbar-thumb-primary-200 scrollbar-track-gray-100 max-h-40 w-[var(--radix-popover-trigger-width)] overflow-auto rounded-b-lg border-t-0 bg-white p-4">
+        <PopoverContent className="border-primary-100 scrollbar-thin scrollbar-thumb-primary-200 scrollbar-track-gray-100 z-[99999] max-h-40 w-[var(--radix-popover-trigger-width)] overflow-auto rounded-b-lg border-t-0 bg-white p-4">
           <ul className="flex flex-col">
             {options.map(option => (
               <li
