@@ -1,4 +1,4 @@
-import { BaggageClaim, Home, TicketPercent } from 'lucide-react';
+import { BaggageClaim, Home, SquareUser, TicketPercent } from 'lucide-react';
 import { Logo } from './Logo';
 import { useState } from 'react';
 import { twMerge } from 'tailwind-merge';
@@ -7,6 +7,7 @@ import { usePathname, useRouter } from 'next/navigation';
 
 const links = [
   { href: '/', label: 'Reservas', icon: BaggageClaim },
+  { href: '/hospedes', label: 'Hóspedes', icon: SquareUser },
   { href: '/quartos', label: 'Quartos', icon: FaBed },
   { href: '/promocoes', label: 'Promoções', icon: TicketPercent },
 ];

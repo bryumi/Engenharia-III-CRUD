@@ -11,16 +11,18 @@ import TableComponent, { IRow } from '@/componentes/Tables/TableComponent';
 import ModalSale from '@/componentes/Modals/ModalSale/ModalSale';
 import { useListSales } from '@/services/sales/list-sales';
 import { ISale } from '@/@types/sale.interface';
+import { renderSlicedText } from '@/utils/slicedText';
+import { formatDate } from '@/utils/masks';
 
 const dataToRow = (data: ISale[]) => {
   return data?.map(item => ({
     id: item?.id,
     data: [
       { text: item?.codigoSale },
-      { text: item?.description },
+      { text: renderSlicedText(item?.description, 10) },
       { text: item?.tipo },
       { text: item?.valor },
-      { text: item?.validoAte },
+      { text: formatDate(item?.validoAte || '') },
     ],
   })) as IRow[];
 };

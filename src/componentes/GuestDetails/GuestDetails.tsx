@@ -16,16 +16,11 @@ import {
 } from '@/validations/GuestsSchema';
 import { IGuest } from '@/@types/guests.interface';
 
-interface IGuestsFormProps {
-  onNextStep: (data: IStepOneGuestFormSchema) => void;
+interface IGuestDetailsProps {
   formType?: 'register' | 'edit';
   formData?: IGuest;
 }
-const GuestsForm = ({
-  onNextStep,
-  formType = 'register',
-  formData,
-}: IGuestsFormProps) => {
+const GuestDetails = ({ formData }: IGuestDetailsProps) => {
   const formDefaultValues = formData
     ? {
         fullName: formData.name,
@@ -44,55 +39,14 @@ const GuestsForm = ({
     : undefined;
   const {
     register,
-    handleSubmit,
-    control,
-    setValue,
-    getValues,
-    trigger,
     formState: { errors },
   } = useForm<IStepOneGuestFormSchema>({
     resolver: yupResolver(StepOneGuestFormSchema),
     mode: 'onChange',
     defaultValues: formDefaultValues,
   });
-  const getCepData = async (cep: string) => {
-    try {
-      const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
-      const data = await response.json();
-      if (data) {
-        setValue('street', data.logradouro);
-        setValue('neighborhood', data.bairro);
-        setValue('city', data.localidade);
-        setValue('state', data.uf);
-        trigger(['street', 'neighborhood', 'city', 'state']);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  const handleCepInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    let numericValue = getValues('cep') || '';
-    numericValue = numericValue.replace('-', '');
-    if (numericValue.length === 8) {
-      getCepData(numericValue);
-    } else {
-      setValue('street', '');
-      setValue('neighborhood', '');
-      setValue('city', '');
-      setValue('state', null as any);
-      trigger(['street', 'neighborhood', 'city', 'state']);
-    }
-  };
-  const onSubmit = (data: IStepOneGuestFormSchema) => {
-    console.log(data);
-    onNextStep(data);
-  };
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col gap-[32px]"
-    >
+    <div className="flex flex-col gap-[32px]">
       <div className="bg-white2 border-primary20 flex flex-col gap-[24px] rounded-[12px] border-1 p-[24px]!">
         <legend className="text-primary80 mb-[24px]! text-[18px] font-bold">
           Dados do hóspede
@@ -104,6 +58,7 @@ const GuestsForm = ({
             placeholder="Insira o nome completo"
             {...register('fullName')}
             error={errors?.fullName?.message}
+            disabled
           />
           <Input2
             maxwidthClassName="max-w-[368px]"
@@ -112,6 +67,7 @@ const GuestsForm = ({
             placeholder="Insira a data de nascimento"
             {...register('birthDate')}
             error={errors?.birthDate?.message}
+            disabled
           />
           <Input2
             maxwidthClassName="max-w-[368px]"
@@ -120,6 +76,7 @@ const GuestsForm = ({
             maskFunction={maskCPF}
             {...register('cpf')}
             error={errors?.cpf?.message}
+            disabled
           />
           <Input2
             maxwidthClassName="max-w-[368px]"
@@ -127,6 +84,7 @@ const GuestsForm = ({
             placeholder="Insira o e-mail"
             {...register('email')}
             error={errors?.email?.message}
+            disabled
           />
           <Input2
             maxwidthClassName="max-w-[368px]"
@@ -135,6 +93,7 @@ const GuestsForm = ({
             placeholder="Insira o telefone"
             {...register('phone')}
             error={errors?.phone?.message}
+            disabled
           />
         </fieldset>
         <hr className="text-primary20" />
@@ -147,10 +106,9 @@ const GuestsForm = ({
             label="CEP"
             maskFunction={maskCEP}
             placeholder="Insira o CEP"
-            {...register('cep', {
-              onChange: handleCepInput,
-            })}
+            {...register('cep')}
             error={errors?.cep?.message}
+            disabled
           />
           <Input2
             maxwidthClassName="max-w-[368px]"
@@ -158,6 +116,7 @@ const GuestsForm = ({
             placeholder="Insira o bairro"
             {...register('neighborhood')}
             error={errors?.neighborhood?.message}
+            disabled
           />
           <Input2
             maxwidthClassName="max-w-[368px]"
@@ -165,6 +124,7 @@ const GuestsForm = ({
             placeholder="Insira a rua"
             {...register('street')}
             error={errors?.street?.message}
+            disabled
           />
           <Input2
             maxwidthClassName="max-w-[368px]"
@@ -172,6 +132,7 @@ const GuestsForm = ({
             placeholder="Insira o número"
             {...register('number')}
             error={errors?.number?.message}
+            disabled
           />
           <Input2
             maxwidthClassName="max-w-[368px]"
@@ -179,6 +140,7 @@ const GuestsForm = ({
             placeholder="Insira a cidade"
             {...register('city')}
             error={errors?.city?.message}
+            disabled
           />
           <Input2
             maxwidthClassName="max-w-[368px]"
@@ -186,6 +148,7 @@ const GuestsForm = ({
             placeholder="Insira o estado"
             {...register('state')}
             error={errors?.state?.message}
+            disabled
           />
           <Input2
             maxwidthClassName="max-w-[368px]"
@@ -193,16 +156,12 @@ const GuestsForm = ({
             placeholder="Insira o complemento"
             {...register('complement')}
             error={errors?.complement?.message}
+            disabled
           />
         </fieldset>
       </div>
-      <div className="flex items-center justify-end">
-        <Button type="submit" customClassNames="w-[200px]">
-          Salvar
-        </Button>
-      </div>
-    </form>
+    </div>
   );
 };
 
-export default GuestsForm;
+export default GuestDetails;

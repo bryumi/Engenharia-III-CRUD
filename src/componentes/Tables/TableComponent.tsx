@@ -146,7 +146,7 @@ const TableComponent = ({
                     ) : info?.text ? (
                       <span
                         className={twMerge(
-                          'text-primary80 flex items-end text-[14px] font-normal whitespace-nowrap uppercase',
+                          'text-primary80 flex items-end text-[14px] font-normal whitespace-nowrap',
                           !!invalidColor && info?.error !== undefined
                             ? info?.error
                               ? 'text-warning'

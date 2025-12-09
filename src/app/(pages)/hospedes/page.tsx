@@ -2,28 +2,31 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
-import React, { ChangeEvent, use, useState } from 'react';
+import { use, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Button from '@/componentes/Button/Button';
-import { mockRooms } from '@/data/mockRooms';
 import Title from '@/componentes/Title/Title';
 import Modal from '@/componentes/Modals/Modal/Modal';
 import TableComponent, { IRow } from '@/componentes/Tables/TableComponent';
-import { useListReservations } from '@/services/reservation/list-reservation';
-import { IReservation } from '@/@types/reservation.interface';
-import { dateBr } from '@/utils/masks';
-import { useDeleteReservation } from '@/services/reservation/delete-reservation';
+import { useListGuests } from '@/services/guests/list-guests';
+import { IGuest } from '@/@types/guests.interface';
+import { renderSlicedText } from '@/utils/slicedText';
+import { useDeleteGuest } from '@/services/guests/delete-guest';
 import { useQueryClient } from '@tanstack/react-query';
 
-const dataToRow = (data: IReservation[]) => {
+const dataToRow = (data: IGuest[]) => {
   return data?.map(item => ({
     id: item?.id,
+    active: !item?.isActive === true,
     data: [
-      { text: item?.codeReservation },
-      { text: item?.qntAdults },
-      { text: item?.qntChildren || '-' },
-      { text: dateBr(item?.dateStart) },
-      { text: dateBr(item?.dateEnd) },
+      { text: renderSlicedText(item?.name, 30) },
+      { text: renderSlicedText(item?.email, 20) },
+      { text: item?.addresses[0]?.state || '-' },
+      { text: item?.addresses[0]?.city || '-' },
+      {
+        text: item?.isActive ? 'Ativo' : 'Inativo',
+        customClassNames: item.isActive === false ? 'text-red-500' : '',
+      },
     ],
   })) as IRow[];
 };
@@ -31,38 +34,46 @@ const BookingsPage = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [currentPage, setCurrentPage] = useState(1);
+  const [openSwitchModal, setOpenSwitchModal] = useState(false);
+  const [openSwitchSuccessModal, setOpenSwitchSuccessModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [openDeleteSuccessModal, setOpenDeleteSuccessModal] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<string | undefined>(
-    undefined,
-  );
-
-  const { data, isLoading, isError } = useListReservations();
-  const { mutate: mutateDelete } = useDeleteReservation({
+  const [selectedItem, setSelectedItem] = useState<
+    { id: string; bool?: boolean } | undefined
+  >(undefined);
+  const { mutate: mutateDelete } = useDeleteGuest({
     onSuccess: () => {
       setOpenDeleteModal(false);
       setOpenDeleteSuccessModal(true);
-      queryClient.invalidateQueries({ queryKey: ['list-reservations'] });
+      queryClient.invalidateQueries({
+        queryKey: ['list-guests', 'list-rooms-guests'],
+      });
     },
   });
+  const { data, isLoading, isError } = useListGuests();
   const handleDelete = (id: string) => {
-    setSelectedItem(id);
+    setSelectedItem({ id });
     setOpenDeleteModal(true);
   };
 
   const handleConfirmDelete = () => {
     if (selectedItem) {
-      mutateDelete(selectedItem);
+      mutateDelete(selectedItem.id);
     }
   };
-
+  const handleEdit = (id: string) => {
+    router.push(`/hospedes/${id}/editar`);
+  };
+  const handleView = (id: string) => {
+    router.push(`/hospedes/${id}/detalhes`);
+  };
   return (
     <div className="flex flex-col gap-[32px]">
       {openDeleteSuccessModal && (
         <Modal
           modalType="success"
           message1="Sucesso!"
-          message2="Reserva excluída com sucesso!"
+          message2="Hóspede excluído com sucesso!"
           buttons={[
             {
               text: 'Voltar',
@@ -76,7 +87,7 @@ const BookingsPage = () => {
           modalType="warning"
           message1="Atenção!"
           message2={
-            'Você está prestes a excluir permanentemente a \nreserva. Esta ação não poderá ser desfeita.'
+            'Você está prestes a excluir permanentemente o\nhóspede. Esta ação não poderá ser desfeita.'
           }
           buttons={[
             {
@@ -91,30 +102,32 @@ const BookingsPage = () => {
         />
       )}
       <div className="flex items-center justify-between">
-        <Title>Reservas</Title>
+        <Title>Hóspedes</Title>
         <Button
           type="button"
           customClassNames="min-w-[200px]"
-          onClick={() => router.push('/cadastrar')}
+          onClick={() => router.push('/hospedes/cadastrar')}
         >
           Cadastrar
         </Button>
       </div>
       <TableComponent
         headers={[
-          { name: 'CÓDIGO' },
-          { name: 'QTD ADULTOS' },
-          { name: 'QTD CRIANÇAS' },
-          { name: 'DATA CHECK-IN' },
-          { name: 'DATA CHECK-OUT' },
+          { name: 'NOME' },
+          { name: 'EMAIL' },
+          { name: 'ESTADO' },
+          { name: 'CIDADE' },
+          { name: 'STATUS' },
         ]}
         rows={dataToRow(data || [])}
         page={currentPage}
         setPage={setCurrentPage}
         total={data?.length || 0}
-        pageSize={6}
+        pageSize={20}
         pageCount={1}
         handleDelete={handleDelete}
+        handleEdit={handleEdit}
+        handleView={handleView}
       />
     </div>
   );

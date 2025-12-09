@@ -3,31 +3,37 @@ import Input2 from '../Inputs/Input2/Input2';
 import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { InputSelect } from '../Inputs/InputSelect/InputSelect';
-import {
-  IStepTwoBookingFormSchema,
-  StepTwoBookingFormSchema,
-} from '@/validations/BookingSchema';
 import { generateOptions } from '@/utils/generateOptions';
 import { useOptionsRooms } from '@/services/rooms/list-rooms';
 import { useOptionsSales } from '@/services/sales/list-sales';
+import {
+  BookingFormSchema,
+  IBookingFormSchema,
+} from '@/validations/BookingSchema';
+import { useOptionsGuests } from '@/services/guests/list-guests';
 
-const BookingForm = () => {
+interface IBookingFormProps {
+  onSave: (data: IBookingFormSchema) => void;
+}
+const BookingForm = ({ onSave }: IBookingFormProps) => {
   const {
     register,
     handleSubmit,
     control,
     watch,
     formState: { errors },
-  } = useForm<IStepTwoBookingFormSchema>({
-    resolver: yupResolver(StepTwoBookingFormSchema),
+  } = useForm<IBookingFormSchema>({
+    resolver: yupResolver(BookingFormSchema),
     mode: 'onChange',
   });
   const watchNumChildren = watch('numberChildren');
-  const onSubmit = (data: IStepTwoBookingFormSchema) => {
+  const onSubmit = (data: IBookingFormSchema) => {
     console.log(data);
+    onSave(data);
   };
   const { data: optionsRooms } = useOptionsRooms();
   const { data: optionsSales } = useOptionsSales();
+  const { data: optionsGuests } = useOptionsGuests();
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -38,6 +44,21 @@ const BookingForm = () => {
           Dados do quarto
         </legend>
         <fieldset className="grid grid-cols-4 gap-[24px]">
+          <div className="max-w-[368px]">
+            <Controller
+              name="guest"
+              control={control}
+              render={({ field, fieldState }) => (
+                <InputSelect
+                  label="Hóspede"
+                  options={optionsGuests || []}
+                  value={field.value ?? null}
+                  onChange={field.onChange}
+                  error={fieldState.error?.message}
+                />
+              )}
+            />
+          </div>
           <div className="max-w-[368px]">
             <Controller
               name="room"
@@ -108,7 +129,7 @@ const BookingForm = () => {
                     render={({ field, fieldState }) => (
                       <InputSelect
                         label={`Idade da criança ${index + 1}`}
-                        options={generateOptions(0, 18)}
+                        options={generateOptions(0, 17)}
                         value={field.value || null}
                         onChange={field.onChange}
                         error={fieldState.error?.message}
@@ -119,26 +140,6 @@ const BookingForm = () => {
               ))}
             </>
           )}
-        </fieldset>
-        <hr className="text-primary20" />
-        <legend className="text-primary80 mb-[24px]! text-[18px] font-bold">
-          Dados de cancelamento
-        </legend>
-        <fieldset className="grid grid-cols-4 gap-[24px]">
-          <Input2
-            maxwidthClassName="max-w-[368px]"
-            label="Descrição do cancelamento"
-            placeholder="Insira a descrição do cancelamento"
-            {...register('cancelDescription')}
-            error={errors?.cancelDescription?.message}
-          />
-          <Input2
-            maxwidthClassName="max-w-[368px]"
-            label="Porcentagem de multa por cancelamento"
-            placeholder="Insira a porcentagem de multa por cancelamento"
-            {...register('percentageCancel')}
-            error={errors?.percentageCancel?.message}
-          />
         </fieldset>
         <hr className="text-primary20" />
         <legend className="text-primary80 mb-[24px]! text-[18px] font-bold">

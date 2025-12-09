@@ -287,3 +287,9 @@ export const dateISO = (dateString: string) => {
   const typeDate = new Date(date);
   return typeDate;
 };
+export const dateBr = (dateString: string) => {
+  if (!dateString) return '';
+  const parts = dateString.split('-');
+  const date = `${parts[2]}/${parts[1]}/${parts[0]}`;
+  return date;
+};
