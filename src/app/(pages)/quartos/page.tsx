@@ -63,7 +63,6 @@ const RoomsPage = () => {
     },
     onError: error => handleError(error),
   });
-  console.log('roomsData', roomsData);
   const handleDelete = (id: string) => {
     // setSelectedItem({ id });
     setOpenDeleteModal(true);
@@ -192,7 +191,7 @@ const RoomsPage = () => {
         page={currentPage}
         setPage={setCurrentPage}
         total={roomsData?.count || 0}
-        pageSize={6}
+        pageSize={20}
         pageCount={1}
         handleDelete={handleDelete}
         handleToggle={handleSwitchModal}

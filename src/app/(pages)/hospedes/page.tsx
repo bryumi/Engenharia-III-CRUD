@@ -13,6 +13,8 @@ import { IGuest } from '@/@types/guests.interface';
 import { renderSlicedText } from '@/utils/slicedText';
 import { useDeleteGuest } from '@/services/guests/delete-guest';
 import { useQueryClient } from '@tanstack/react-query';
+import { useActiveOrInactiveGuest } from '@/services/guests/toogle-status-guest';
+import handleError from '@/utils/handleToast';
 
 const dataToRow = (data: IGuest[]) => {
   return data?.map(item => ({
@@ -50,6 +52,16 @@ const BookingsPage = () => {
       });
     },
   });
+  const { mutate: mutateSwitch } = useActiveOrInactiveGuest({
+    onSuccess: () => {
+      setOpenSwitchModal(false);
+      setOpenSwitchSuccessModal(true);
+      queryClient.invalidateQueries({
+        queryKey: ['list-guests'],
+      });
+    },
+    onError: error => handleError(error),
+  });
   const { data, isLoading, isError } = useListGuests();
   const handleDelete = (id: string) => {
     setSelectedItem({ id });
@@ -66,6 +78,26 @@ const BookingsPage = () => {
   };
   const handleView = (id: string) => {
     router.push(`/hospedes/${id}/detalhes`);
+  };
+  const handleSwitchModal = (id: string, bool: boolean) => {
+    setSelectedItem({ id, bool });
+    setOpenSwitchModal(true);
+  };
+
+  const handleToggle = () => {
+    if (selectedItem) {
+      console.log('Toggling item:', selectedItem);
+      console.log('New isActive value:', !selectedItem.bool);
+      mutateSwitch({
+        documentId: selectedItem.id,
+        bool: !selectedItem.bool,
+      });
+    }
+  };
+
+  const handleCloseSwitchSuccessModal = () => {
+    // setSelectedItem(undefined);
+    setOpenSwitchSuccessModal(false);
   };
   return (
     <div className="flex flex-col gap-[32px]">
@@ -101,6 +133,44 @@ const BookingsPage = () => {
           ]}
         />
       )}
+      {openSwitchModal && selectedItem && (
+        <Modal
+          modalType="alert"
+          message1="Atenção!"
+          message2={
+            !selectedItem?.bool
+              ? 'Você está prestes a desativar o hóspede da lista. Tem certeza que deseja continuar?'
+              : 'Você está prestes a ativar o hóspede da lista. Tem certeza que deseja continuar?'
+          }
+          buttons={[
+            {
+              text: 'Cancelar',
+              onClick: () => setOpenSwitchModal(false),
+            },
+            {
+              text: 'Continuar',
+              onClick: handleToggle,
+            },
+          ]}
+        />
+      )}
+      {openSwitchSuccessModal && selectedItem && (
+        <Modal
+          modalType="success"
+          message1="Sucesso!"
+          message2={
+            !selectedItem?.bool
+              ? 'Hóspede desativado com sucesso!'
+              : 'Hóspede ativado com sucesso!'
+          }
+          buttons={[
+            {
+              text: 'Voltar',
+              onClick: handleCloseSwitchSuccessModal,
+            },
+          ]}
+        />
+      )}
       <div className="flex items-center justify-between">
         <Title>Hóspedes</Title>
         <Button
@@ -128,6 +198,7 @@ const BookingsPage = () => {
         handleDelete={handleDelete}
         handleEdit={handleEdit}
         handleView={handleView}
+        handleToggle={handleSwitchModal}
       />
     </div>
   );

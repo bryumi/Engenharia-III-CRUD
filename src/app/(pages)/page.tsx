@@ -14,6 +14,8 @@ import { IReservation } from '@/@types/reservation.interface';
 import { dateBr } from '@/utils/masks';
 import { useDeleteReservation } from '@/services/reservation/delete-reservation';
 import { useQueryClient } from '@tanstack/react-query';
+import { useActiveOrInactiveReservation } from '@/services/reservation/toogle-status-reservation';
+import handleError from '@/utils/handleToast';
 
 const dataToRow = (data: IReservation[]) => {
   return data?.map(item => ({
@@ -33,9 +35,9 @@ const BookingsPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [openDeleteSuccessModal, setOpenDeleteSuccessModal] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<string | undefined>(
-    undefined,
-  );
+  const [selectedItem, setSelectedItem] = useState<
+    { id: string; bool: boolean } | undefined
+  >(undefined);
 
   const { data, isLoading, isError } = useListReservations();
   const { mutate: mutateDelete } = useDeleteReservation({
@@ -46,16 +48,15 @@ const BookingsPage = () => {
     },
   });
   const handleDelete = (id: string) => {
-    setSelectedItem(id);
+    setSelectedItem({ id, bool: false });
     setOpenDeleteModal(true);
   };
 
   const handleConfirmDelete = () => {
     if (selectedItem) {
-      mutateDelete(selectedItem);
+      mutateDelete(selectedItem.id);
     }
   };
-
   return (
     <div className="flex flex-col gap-[32px]">
       {openDeleteSuccessModal && (
@@ -112,7 +113,7 @@ const BookingsPage = () => {
         page={currentPage}
         setPage={setCurrentPage}
         total={data?.length || 0}
-        pageSize={6}
+        pageSize={20}
         pageCount={1}
         handleDelete={handleDelete}
       />

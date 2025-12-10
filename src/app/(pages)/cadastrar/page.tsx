@@ -47,7 +47,8 @@ const BookingsRegisterPage = () => {
       );
       const reservationId = reservationResponse.data.reservation.id;
       await api.post('/payments', {
-        reservation: reservationId,
+        reservationId: reservationId,
+        price: reservationId.totalPrice,
       });
       await queryClient.invalidateQueries({ queryKey: ['list-reservations'] });
       setOpenSuccessModal(true);

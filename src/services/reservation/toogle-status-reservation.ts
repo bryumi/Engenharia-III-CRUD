@@ -4,9 +4,12 @@ interface Props {
   onSuccess?: () => void;
   onError?: (error: any) => void;
 }
-export const useActiveOrInactiveGuest = ({ onSuccess, onError }: Props) => {
+export const useActiveOrInactiveReservation = ({
+  onSuccess,
+  onError,
+}: Props) => {
   return useMutation({
-    mutationKey: ['active-or-inactive-guest'],
+    mutationKey: ['active-or-inactive-reservation'],
     mutationFn: async ({
       documentId,
       bool,
@@ -16,9 +19,9 @@ export const useActiveOrInactiveGuest = ({ onSuccess, onError }: Props) => {
     }) => {
       let endpoint = '';
       if (bool) {
-        endpoint = `guests/${documentId}/inactivate`;
+        endpoint = `reservations/${documentId}/inativar`;
       } else {
-        endpoint = `guests/${documentId}/activate`;
+        endpoint = `reservations/${documentId}/ativar`;
       }
       await api.patch(endpoint);
     },
